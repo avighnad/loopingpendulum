@@ -1,0 +1,22 @@
+function dXdt = odefun(t, X, Ms, m, Mu_d, g, lambda, rr, L, omega)
+    x1 = X(1);  % theta
+    x2 = X(2);  % dtheta/dt
+    x3 = X(3);  % y
+    x4 = X(4);  % dy/dt
+    
+    % Calculate l
+    l = L + x3 - rr*(pi + x1);
+    
+    % Calculate dl/dt
+    dl_dt = x4 - rr*x2;
+    
+    % First equation
+    dx2dt = -3/(2*l) * g * sin(x1) * (Ms + 2*m)/(Ms + 3*m) - 2/l * x2 * dl_dt;
+    
+    % Second equation
+    dx4dt = (Mu_d*m*g*cos(x1)*exp(Mu_d*(pi+x1)) + Mu_d*m*l*omega^2*exp(Mu_d*(pi+x1)) - Mu_d*Ms*g) / ...
+            (Ms*Mu_d + lambda*rr*exp(Mu_d*(pi+x1)) - lambda*rr + m*Mu_d*exp(Mu_d*(pi+x1)));
+    
+    dXdt = [x2; dx2dt; x4; dx4dt];
+end
+
